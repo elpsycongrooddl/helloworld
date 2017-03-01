@@ -1,96 +1,58 @@
-#include <iostream>
-#include <string>
-#include <stack>
-#include <queue>
+#include <stdio.h>
+#include <stdlib.h>
 using namespace std;
 
-void Translation(string c,string A,char* B)
+typedef struct person
 {
-    char k;
-    stack<char> s;
-    stack<char> t;
-    queue<char> q;
-    for(int i=c.size()-1;i>=0;i--)
-    {
-        s.push(c[i]);
-    }
-    while(!s.empty())
-    {
-        k=s.top();
-        s.pop();
-        t.push(k);
-        if(k==')')
-        {
-            char x;
-            t.pop();
-            while(t.top()!='(')
-            {
-                x=t.top();
-                q.push(x);
-                t.pop();
-            }
-            t.pop();
-            while(q.size()>1)
-            {
-                t.push(x);
-                t.push(q.front());
-                q.pop();
-            }
-            t.push(q.front());
-            q.pop();
-        }
-    }
-    while(!t.empty())
-    {
-        s.push(t.top());
-        t.pop();
-    }
-    while(!s.empty())
-    {
-        k=s.top();
-        s.pop();
+    int pas;
+    int num;
+    struct person *next;
+}*Link,Lnode;//person结构体定义。
 
-        if(k=='A')
-        {
-            cout<<A;
-            continue;
-        }
-        else if(k=='B')
-        {
-            for(int i=0;i<4;i++)
-            {
-                if(B[i]=='A') cout<<A;
-                else cout<<B[i];
-            }
-            continue;
-        }
-             else
-             {
-                 cout<<k;
-             }
+typedef struct
+{
+    Link head,tail;
+    int len;
+}LinkList;//单向循环链表的定义
 
-    }
-
-
-
-    cout<<endl;
-}
 int main()
 {
-    queue<char> q;
-    string A="sae";
-    char B[4]={'t','A','d','A'};
-    string c;
-    cin>>c;
-    cout<<"解释后的语言为：\n";
-    Translation(c,A,B);
-
-
-    cout<<"\n";
-    cout<<"再次输入魔王语言\n";
-return 0;
+    int m;
+    int n;
+    scanf("%d%d",&m,&n);//输入m初始值和总人数n。
+    LinkList A;
+    A.head=(Link)malloc(sizeof(Lnode));
+    A.tail=A.head;//构建单向循环链表A。
+    Link p,q;//建立pq指针
+    p=A.head;
+    for(int i=0;i<n;i++)
+    {
+        scanf("%d",&p->pas);
+        p->num=i+1;
+        p->next=(Link)malloc(sizeof(Lnode));
+        p=p->next;
+    }
+    A.tail=p;
+    A.tail->pas=-1;
+    A.tail->next=A.head;
+    p=A.head;
+    q=A.tail;
+    while(n--)
+    {
+        m--;
+        while(m--)
+        {
+            q=q->next;//q指向其后继节点
+            p=p->next;//p指向其后继节点
+            if(p->pas==-1)
+                m++;
+        }//遍历单向循环链表
+        printf("%d ",p->num);
+        m=p->pas;
+        q->next=p->next;
+        free(p);//删除p节点
+        p=q->next;
+        if(p->pas==-1)
+            m++;
+    }
 }
-
-
-
-
